@@ -22,4 +22,13 @@ return {
       },
     },
   },
+  {
+    "folke/snacks.nvim",
+    opts = {
+      notifier = {
+        timeout = 3000, --- in ms, 3000 is default
+        top_down = false,
+      }
+    }
+  },
 }
