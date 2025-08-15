@@ -1,12 +1,26 @@
 # AstroNvim Template
 
 **NOTE:** This is for AstroNvim v5+
-
 A template for getting started with [AstroNvim](https://github.com/AstroNvim/AstroNvim)
 
 ## 🛠️ Installation
 
+Installing this configuration on a new system
+
+1. Clone the repo
+
+```sh
+git clone https://github.com/natomato/astronvim_v5 ~/.config/nvim
+```
+
+2. Initialize AstroNvim
+```sh
+nvim --headless -c 'quitall'
+```
+
+
 #### Make a backup of your current nvim and shared folder
+
 
 ```shell
 mv ~/.config/nvim ~/.config/nvim.bak
@@ -15,20 +29,25 @@ mv ~/.local/state/nvim ~/.local/state/nvim.bak
 mv ~/.cache/nvim ~/.cache/nvim.bak
 ```
 
-#### Create a new user repository from this template
 
-Press the "Use this template" button above to create a new repository to store your user configuration.
+## Basic Usage Notes
 
-You can also just clone this repository directly if you do not want to track your user configuration in GitHub.
+Notation: 
+<C-o> is shorthand for Ctrl + 'o'
 
-#### Clone the repository
 
-```shell
-git clone https://github.com/<your_user>/<your_repository> ~/.config/nvim
-```
+Neo-tree
+? - help
+Shift <,> - switch between panels Files, Buff, Git
+Shift H,L - switch between neo-tree and the file windows
+<Leader-e> - toggle neo-tree open/close
 
-#### Start Neovim
+Splits happen
+:on - only, close all other splits
+Ctrl c - close the current split
 
-```shell
-nvim
-```
+Plugins
+What plugins do I have installed? What version?
+:Lazy
+Shows a list, hover over any one and hit enter to see the version and details
+
