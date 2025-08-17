@@ -18,7 +18,6 @@ git clone https://github.com/natomato/astronvim_v5 ~/.config/nvim
 nvim --headless -c 'quitall'
 ```
 
-
 #### Make a backup of your current nvim and shared folder
 
 
@@ -51,3 +50,11 @@ What plugins do I have installed? What version?
 :Lazy
 Shows a list, hover over any one and hit enter to see the version and details
 
+## Changes from v4 to v5
+
+telescope is replaced with Snacks.picker: https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
+
+auto format on save is default and provides a filter function
+https://docs.astronvim.com/recipes/advanced_lsp/#disabling-formatting-for-a-filter-function
+
+this is probably the way to prevent denols and ts_ls from both attaching to the same buffer
