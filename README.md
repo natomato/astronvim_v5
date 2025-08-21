@@ -14,12 +14,12 @@ git clone https://github.com/natomato/astronvim_v5 ~/.config/nvim
 ```
 
 2. Initialize AstroNvim
+
 ```sh
 nvim --headless -c 'quitall'
 ```
 
 #### Make a backup of your current nvim and shared folder
-
 
 ```shell
 mv ~/.config/nvim ~/.config/nvim.bak
@@ -28,12 +28,10 @@ mv ~/.local/state/nvim ~/.local/state/nvim.bak
 mv ~/.cache/nvim ~/.cache/nvim.bak
 ```
 
-
 ## Basic Usage Notes
 
-Notation: 
+Notation:
 <C-o> is shorthand for Ctrl + 'o'
-
 
 Neo-tree
 ? - help
@@ -58,3 +56,10 @@ auto format on save is default and provides a filter function
 https://docs.astronvim.com/recipes/advanced_lsp/#disabling-formatting-for-a-filter-function
 
 this is probably the way to prevent denols and ts_ls from both attaching to the same buffer
+
+## Troubleshooting
+
+
+```sh
+:lua vim.print(vim.diagnostic.get(0))
+```
