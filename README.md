@@ -31,22 +31,25 @@ mv ~/.cache/nvim ~/.cache/nvim.bak
 ## Basic Usage Notes
 
 Notation:
-<C-o> is shorthand for Ctrl + 'o'
+`<C-o>` is shorthand for Ctrl + 'o': jump to previous location
 
 Neo-tree
-? - help
-Shift <,> - switch between panels Files, Buff, Git
-Shift H,L - switch between neo-tree and the file windows
-<Leader-e> - toggle neo-tree open/close
+`?` - help
+`Shift <,>` - switch between panels Files, Buff, Git
+`Shift H,L` - switch between neo-tree and the file windows
+`<Leader-e>` - toggle neo-tree open/close
 
 Splits happen
-:on - only, close all other splits
-Ctrl c - close the current split
+`:on` - only, close all other splits
+`<C-c>` - close the current split
 
 Plugins
 What plugins do I have installed? What version?
-:Lazy
+`:Lazy`
 Shows a list, hover over any one and hit enter to see the version and details
+
+Custom Keymaps
+`<Leader>n`: Review Missed Notifications
 
 ## Changes from v4 to v5
 
@@ -59,7 +62,33 @@ this is probably the way to prevent denols and ts_ls from both attaching to the 
 
 ## Troubleshooting
 
+Ask claude.
+
+These commands were once useful
 
 ```sh
 :lua vim.print(vim.diagnostic.get(0))
+```
+
+## Errors and Hacks
+
+#### Selene
+
+Mason install will add selene on start of astronvim.
+I dont know how to stop this behavior.
+Everytime it installs selene, I will get an error from null-ls when loading a lua file.
+However, if i use the binary installed from `brew` selene works as expected, without a null-ls error notification.
+
+```sh
+brew install selene
+selene <some_lua_file>
+which selene
+```
+
+My solution is to trick Mason into thinking it installed selene, but symlink to the brew installed version instead.
+This is achieved by letting Mason install selene, then cd into
+
+```
+cd ~/.local/share/nvim/mason/bin
+ln -s "/usr/local/bin/selene" ./selene
 ```
