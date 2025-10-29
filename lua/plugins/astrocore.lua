@@ -148,6 +148,86 @@ return {
           desc = "Show type info",
         },
 
+        -- Project-scoped jumplist navigation (Ctrl-o replacement)
+        ["<C-o>"] = {
+          function()
+            local function get_git_root()
+              local git_root = vim.fn.systemlist("git rev-parse --show-toplevel 2>/dev/null")[1]
+              return vim.v.shell_error == 0 and git_root or nil
+            end
+
+            local git_root = get_git_root()
+
+            -- If not in git project, use default behavior
+            if not git_root then
+              vim.api.nvim_feedkeys(vim.keycode("<C-o>"), "n", false)
+              return
+            end
+
+            -- Get jumplist
+            local jumps, current = unpack(vim.fn.getjumplist())
+
+            -- Find next valid jump backwards (within project)
+            for i = current, 1, -1 do
+              local jump = jumps[i]
+              if jump.bufnr > 0 and vim.api.nvim_buf_is_valid(jump.bufnr) then
+                local bufname = vim.api.nvim_buf_get_name(jump.bufnr)
+                if bufname:match("^" .. vim.pesc(git_root)) then
+                  -- Found valid jump, execute it N times
+                  local count = current - i + 1
+                  for _ = 1, count do
+                    vim.api.nvim_feedkeys(vim.keycode("<C-o>"), "n", false)
+                  end
+                  return
+                end
+              end
+            end
+
+            vim.notify("No previous jumps in current project", vim.log.levels.INFO)
+          end,
+          desc = "Jump to previous location (project-scoped)",
+        },
+
+        -- Project-scoped forward jump (Ctrl-i replacement)
+        ["<C-i>"] = {
+          function()
+            local function get_git_root()
+              local git_root = vim.fn.systemlist("git rev-parse --show-toplevel 2>/dev/null")[1]
+              return vim.v.shell_error == 0 and git_root or nil
+            end
+
+            local git_root = get_git_root()
+
+            -- If not in git project, use default behavior
+            if not git_root then
+              vim.api.nvim_feedkeys(vim.keycode("<C-i>"), "n", false)
+              return
+            end
+
+            -- Get jumplist
+            local jumps, current = unpack(vim.fn.getjumplist())
+
+            -- Find next valid jump forwards (within project)
+            for i = current + 2, #jumps do
+              local jump = jumps[i]
+              if jump.bufnr > 0 and vim.api.nvim_buf_is_valid(jump.bufnr) then
+                local bufname = vim.api.nvim_buf_get_name(jump.bufnr)
+                if bufname:match("^" .. vim.pesc(git_root)) then
+                  -- Found valid jump, execute it N times
+                  local count = i - current - 1
+                  for _ = 1, count do
+                    vim.api.nvim_feedkeys(vim.keycode("<C-i>"), "n", false)
+                  end
+                  return
+                end
+              end
+            end
+
+            vim.notify("No forward jumps in current project", vim.log.levels.INFO)
+          end,
+          desc = "Jump to next location (project-scoped)",
+        },
+
         -- tables with just a `desc` key will be registered with which-key if it's installed
         -- this is useful for naming menus
         -- ["<Leader>b"] = { desc = "Buffers" },
