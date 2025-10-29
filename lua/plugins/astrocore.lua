@@ -78,6 +78,76 @@ return {
           function() require("snacks").notifier.show_history() end,
           desc = "Notification history",
         },
+
+        -- show TypeScript type information in floating window
+        ["<Leader>lt"] = {
+          function()
+            local params = vim.lsp.util.make_position_params()
+            vim.lsp.buf_request(0, "textDocument/hover", params, function(err, result, ctx, config)
+              if err then
+                vim.notify("Error getting type info: " .. tostring(err), vim.log.levels.ERROR)
+                return
+              end
+              if not result or not result.contents then
+                vim.notify("No type information available", vim.log.levels.WARN)
+                return
+              end
+
+              -- Format the hover content
+              local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
+              markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
+
+              if vim.tbl_isempty(markdown_lines) then
+                vim.notify("No type information available", vim.log.levels.WARN)
+                return
+              end
+
+              -- Create floating window with better styling
+              local bufnr = vim.api.nvim_create_buf(false, true)
+              vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, markdown_lines)
+              vim.api.nvim_buf_set_option(bufnr, "filetype", "markdown")
+
+              local width = math.min(80, vim.o.columns - 4)
+              local height = math.min(#markdown_lines + 2, math.floor(vim.o.lines * 0.8))
+
+              local opts = {
+                relative = "cursor",
+                width = width,
+                height = height,
+                row = 1,
+                col = 0,
+                style = "minimal",
+                border = "rounded",
+                focusable = true,
+              }
+
+              local win = vim.api.nvim_open_win(bufnr, false, opts)
+              vim.api.nvim_win_set_option(win, "wrap", true)
+              vim.api.nvim_win_set_option(win, "linebreak", true)
+
+              -- Close on cursor move or buffer leave (from the original buffer)
+              local original_buf = vim.api.nvim_get_current_buf()
+              vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave", "InsertEnter" }, {
+                buffer = original_buf,
+                callback = function()
+                  if vim.api.nvim_win_is_valid(win) then
+                    vim.api.nvim_win_close(win, true)
+                  end
+                  return true -- Delete the autocmd after it fires
+                end,
+              })
+
+              -- Also close if user presses escape or clicks elsewhere
+              vim.keymap.set("n", "<Esc>", function()
+                if vim.api.nvim_win_is_valid(win) then
+                  vim.api.nvim_win_close(win, true)
+                end
+              end, { buffer = bufnr, nowait = true })
+            end)
+          end,
+          desc = "Show type info",
+        },
+
         -- tables with just a `desc` key will be registered with which-key if it's installed
         -- this is useful for naming menus
         -- ["<Leader>b"] = { desc = "Buffers" },
